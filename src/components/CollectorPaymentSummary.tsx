@@ -85,7 +85,7 @@ const CollectorPaymentSummary = ({ collectorName }: PaymentSummaryProps) => {
                 £{collectedYearlyAmount} / £{totalYearlyAmount}
               </p>
               <p className="text-sm text-dashboard-muted">Amount collected</p>
-              <p className="text-sm text-dashboard-muted mt-1">
+              <p className="text-sm text-dashboard-warning font-medium mt-1">
                 {remainingMembers} {remainingMembers === 1 ? 'member' : 'members'} remaining
               </p>
             </div>
