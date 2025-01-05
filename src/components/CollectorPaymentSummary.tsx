@@ -63,6 +63,9 @@ const CollectorPaymentSummary = ({ collectorName }: PaymentSummaryProps) => {
     (paymentStats.emergencyCollections.completed / paymentStats.totalMembers) * 100
   );
 
+  const totalYearlyAmount = paymentStats.totalMembers * 40;
+  const collectedYearlyAmount = paymentStats.yearlyPayments.completed * 40;
+
   return (
     <Card className="bg-dashboard-card p-6 mt-8 border border-white/10">
       <h3 className="text-xl font-medium text-white mb-6">Payment Collection Summary</h3>
@@ -78,9 +81,9 @@ const CollectorPaymentSummary = ({ collectorName }: PaymentSummaryProps) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-2xl font-bold text-white">
-                {paymentStats.yearlyPayments.completed}/{paymentStats.totalMembers}
+                £{collectedYearlyAmount} / £{totalYearlyAmount}
               </p>
-              <p className="text-sm text-dashboard-muted">Members paid</p>
+              <p className="text-sm text-dashboard-muted">Amount collected</p>
             </div>
             <div className="w-16 h-16">
               <CircularProgressbar
