@@ -5,8 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { CreditCard, Banknote } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import PaymentTypeSelector from "./payment/PaymentTypeSelector";
+import PaymentMethodSelector from "./payment/PaymentMethodSelector";
+import BankDetails from "./payment/BankDetails";
 
 interface PaymentDialogProps {
   isOpen: boolean;
@@ -17,14 +18,20 @@ interface PaymentDialogProps {
   collectorInfo: { name: string | null } | null;
 }
 
-const PaymentDialog = ({ isOpen, onClose, memberId, memberNumber, memberName, collectorInfo }: PaymentDialogProps) => {
+const PaymentDialog = ({ 
+  isOpen, 
+  onClose, 
+  memberId, 
+  memberNumber, 
+  memberName, 
+  collectorInfo 
+}: PaymentDialogProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedPaymentType, setSelectedPaymentType] = useState<string>('yearly');
   const [paymentAmount, setPaymentAmount] = useState<string>('40');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'bank_transfer'>('cash');
 
-  // Handle payment type change
   const handlePaymentTypeChange = (value: string) => {
     setSelectedPaymentType(value);
     if (value === 'yearly') {
@@ -114,31 +121,16 @@ const PaymentDialog = ({ isOpen, onClose, memberId, memberNumber, memberName, co
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="bg-dashboard-card border-dashboard-accent1/20">
         <DialogHeader>
-          <DialogTitle className="text-dashboard-accent2">Record Payment for {memberName}</DialogTitle>
+          <DialogTitle className="text-dashboard-accent2">
+            Record Payment for {memberName}
+            <span className="text-dashboard-accent1 text-sm ml-2">#{memberNumber}</span>
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          <div>
-            <label className="text-sm font-medium mb-3 block text-dashboard-text">Payment Type</label>
-            <ToggleGroup
-              type="single"
-              value={selectedPaymentType}
-              onValueChange={handlePaymentTypeChange}
-              className="justify-start gap-4"
-            >
-              <ToggleGroupItem 
-                value="yearly" 
-                className="h-12 px-6 data-[state=on]:bg-dashboard-accent1 data-[state=on]:text-white border-dashboard-accent1/20"
-              >
-                Yearly Payment
-              </ToggleGroupItem>
-              <ToggleGroupItem 
-                value="emergency" 
-                className="h-12 px-6 data-[state=on]:bg-dashboard-accent1 data-[state=on]:text-white border-dashboard-accent1/20"
-              >
-                Emergency Collection
-              </ToggleGroupItem>
-            </ToggleGroup>
-          </div>
+          <PaymentTypeSelector
+            selectedPaymentType={selectedPaymentType}
+            onPaymentTypeChange={handlePaymentTypeChange}
+          />
           
           <div>
             <label className="text-sm font-medium mb-3 block text-dashboard-text">Amount</label>
@@ -152,49 +144,12 @@ const PaymentDialog = ({ isOpen, onClose, memberId, memberNumber, memberName, co
             />
           </div>
           
-          <div>
-            <label className="text-sm font-medium mb-3 block text-dashboard-text">Payment Method</label>
-            <div className="flex gap-4">
-              <Button
-                type="button"
-                variant={paymentMethod === 'cash' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('cash')}
-                className={`flex-1 h-12 ${
-                  paymentMethod === 'cash' 
-                    ? 'bg-dashboard-accent1 hover:bg-dashboard-accent1/80' 
-                    : 'border-dashboard-accent1/20 hover:bg-dashboard-accent1/10'
-                }`}
-              >
-                <Banknote className="w-5 h-5 mr-2" />
-                Cash
-              </Button>
-              <Button
-                type="button"
-                variant={paymentMethod === 'bank_transfer' ? 'default' : 'outline'}
-                onClick={() => setPaymentMethod('bank_transfer')}
-                className={`flex-1 h-12 ${
-                  paymentMethod === 'bank_transfer' 
-                    ? 'bg-dashboard-accent1 hover:bg-dashboard-accent1/80' 
-                    : 'border-dashboard-accent1/20 hover:bg-dashboard-accent1/10'
-                }`}
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                Bank Transfer
-              </Button>
-            </div>
-          </div>
+          <PaymentMethodSelector
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={setPaymentMethod}
+          />
 
-          {paymentMethod === 'bank_transfer' && (
-            <div className="p-4 bg-dashboard-dark/50 rounded-lg border border-dashboard-accent1/20">
-              <h3 className="text-dashboard-accent2 font-medium mb-2">Bank Details</h3>
-              <div className="space-y-2 text-dashboard-text">
-                <p>HSBC Pakistan Welfare Association</p>
-                <p>Burton In Trent</p>
-                <p>Sort Code: 40-15-31</p>
-                <p>Account: 41024892</p>
-              </div>
-            </div>
-          )}
+          {paymentMethod === 'bank_transfer' && <BankDetails />}
           
           <Button 
             className="w-full bg-dashboard-accent2 hover:bg-dashboard-accent2/80 text-white h-12 text-lg font-medium"
