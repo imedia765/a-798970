@@ -57,56 +57,56 @@ const CollectorFinancialsView = () => {
     <div className="space-y-6">
       <header className="mb-8">
         <h1 className="text-3xl font-medium mb-2 text-white">Financial & Collector Management</h1>
-        <p className="text-dashboard-text">Manage payments and collector assignments</p>
+        <p className="text-white/80">Manage payments and collector assignments</p>
       </header>
 
       {totals && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-gradient-to-br from-dashboard-accent1/20 to-dashboard-accent1/5 border-dashboard-accent1/30 p-4">
+          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalCollected,
                 label: "Total Amount Collected (£)",
-                icon: <Wallet className="h-5 w-5 text-dashboard-accent1" />
+                icon: <Wallet className="h-5 w-5 text-green-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-gradient-to-br from-dashboard-accent2/20 to-dashboard-accent2/5 border-dashboard-accent2/30 p-4">
+          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
             <TotalCount
               items={[{
                 count: totals.pendingAmount,
                 label: "Pending Amount (£)",
-                icon: <Receipt className="h-5 w-5 text-dashboard-accent2" />
+                icon: <Receipt className="h-5 w-5 text-yellow-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-gradient-to-br from-dashboard-accent3/20 to-dashboard-accent3/5 border-dashboard-accent3/30 p-4">
+          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalCollectors,
                 label: "Active Collectors",
-                icon: <Users className="h-5 w-5 text-dashboard-accent3" />
+                icon: <Users className="h-5 w-5 text-blue-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-gradient-to-br from-purple-500/20 to-purple-500/5 border-purple-500/30 p-4">
+          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalTransactions,
                 label: "Total Transactions",
-                icon: <Receipt className="h-5 w-5 text-purple-500" />
+                icon: <Receipt className="h-5 w-5 text-purple-400" />
               }]}
             />
           </Card>
         </div>
       )}
 
-      <Card className="bg-dashboard-card border-dashboard-accent1/20">
+      <Card className="bg-dashboard-card border-white/10">
         <Tabs defaultValue="overview" className="p-6" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-3 gap-4 bg-dashboard-dark">
+          <TabsList className="grid grid-cols-3 gap-4 bg-white/5">
             <TabsTrigger value="overview">Payment Overview</TabsTrigger>
             <TabsTrigger value="collectors">Collectors Overview</TabsTrigger>
             <TabsTrigger value="payments">All Payments</TabsTrigger>
