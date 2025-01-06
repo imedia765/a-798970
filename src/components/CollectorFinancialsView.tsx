@@ -62,42 +62,42 @@ const CollectorFinancialsView = () => {
 
       {totals && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
+          <Card className="bg-emerald-500/10 border-emerald-500/20 p-4 hover:bg-emerald-500/15 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalCollected,
                 label: "Total Amount Collected (£)",
-                icon: <Wallet className="h-5 w-5 text-green-400" />
+                icon: <Wallet className="h-5 w-5 text-emerald-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
+          <Card className="bg-amber-500/10 border-amber-500/20 p-4 hover:bg-amber-500/15 transition-colors">
             <TotalCount
               items={[{
                 count: totals.pendingAmount,
                 label: "Pending Amount (£)",
-                icon: <Receipt className="h-5 w-5 text-yellow-400" />
+                icon: <Receipt className="h-5 w-5 text-amber-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
+          <Card className="bg-indigo-500/10 border-indigo-500/20 p-4 hover:bg-indigo-500/15 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalCollectors,
                 label: "Active Collectors",
-                icon: <Users className="h-5 w-5 text-blue-400" />
+                icon: <Users className="h-5 w-5 text-indigo-400" />
               }]}
             />
           </Card>
           
-          <Card className="bg-white/5 border-white/10 p-4 hover:bg-white/10 transition-colors">
+          <Card className="bg-violet-500/10 border-violet-500/20 p-4 hover:bg-violet-500/15 transition-colors">
             <TotalCount
               items={[{
                 count: totals.totalTransactions,
                 label: "Total Transactions",
-                icon: <Receipt className="h-5 w-5 text-purple-400" />
+                icon: <Receipt className="h-5 w-5 text-violet-400" />
               }]}
             />
           </Card>
