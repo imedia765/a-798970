@@ -19,14 +19,14 @@ const TotalCount = ({ items, count, label, icon }: TotalCountProps) => {
   const displayItems = items || (count !== undefined ? [{ count, label: label || '', icon }] : []);
 
   return (
-    <div className="glass-card p-4 mb-6">
-      <div className="flex items-center gap-8">
+    <div className="glass-card p-2 sm:p-3 md:p-4">
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
         {displayItems.map((item, index) => (
-          <div key={index} className="flex items-center gap-3">
+          <div key={index} className="flex items-center gap-2 sm:gap-3">
             {item.icon}
             <div>
-              <p className="text-sm text-dashboard-muted">{item.label}</p>
-              <p className="text-2xl font-semibold">{item.count}</p>
+              <p className="text-xs sm:text-sm text-dashboard-muted line-clamp-1">{item.label}</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold">{item.count}</p>
             </div>
           </div>
         ))}
