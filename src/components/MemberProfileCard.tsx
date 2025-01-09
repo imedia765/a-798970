@@ -83,15 +83,13 @@ const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
                     </Button>
                   )}
                   
-                  {(userRole === 'collector' || userRole === 'member') && (
-                    <Button
-                      onClick={() => setShowPaymentDialog(true)}
-                      className="w-full bg-dashboard-accent1 hover:bg-dashboard-accent1/80 text-white transition-colors"
-                    >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Make Payment
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => setShowPaymentDialog(true)}
+                    className="w-full bg-dashboard-accent1 hover:bg-dashboard-accent1/80 text-white transition-colors"
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Make Payment
+                  </Button>
                 </div>
               </div>
 
