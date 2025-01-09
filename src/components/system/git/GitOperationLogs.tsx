@@ -1,7 +1,8 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GitOperationLog {
   id: string;
@@ -16,9 +17,49 @@ interface GitOperationLogsProps {
   logs: GitOperationLog[];
 }
 
-export const GitOperationLogs = ({ logs }: GitOperationLogsProps) => {
+export const GitOperationLogs = ({ logs: initialLogs }: GitOperationLogsProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [logs, setLogs] = useState(initialLogs);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setLogs(initialLogs);
+  }, [initialLogs]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('git-logs-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'git_operations_logs'
+        },
+        (payload) => {
+          console.log('Received real-time update:', payload);
+          if (payload.eventType === 'INSERT') {
+            setLogs(prev => [payload.new as GitOperationLog, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setLogs(prev => 
+              prev.map(log => 
+                log.id === payload.new.id ? payload.new as GitOperationLog : log
+              )
+            );
+          }
+          // Auto-scroll to the latest log
+          if (scrollAreaRef.current) {
+            scrollAreaRef.current.scrollTop = 0;
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const getFormattedLogs = () => {
     return logs.map(log => (
@@ -64,12 +105,19 @@ ${log.error_details ? `Error Details: ${log.error_details}` : ''}
           {copied ? 'Copied!' : 'Copy Logs'}
         </button>
       </div>
-      <ScrollArea className="h-[300px] rounded-md border border-dashboard-cardBorder bg-dashboard-card">
+      <ScrollArea 
+        ref={scrollAreaRef}
+        className="h-[300px] rounded-md border border-dashboard-cardBorder bg-dashboard-card"
+      >
         <div className="p-4 space-y-3 font-mono text-sm">
           {logs.map((log) => (
             <div
               key={log.id}
-              className="p-3 rounded bg-dashboard-card/50 border border-dashboard-cardBorder hover:border-dashboard-cardBorderHover transition-colors"
+              className={`p-3 rounded bg-dashboard-card/50 border transition-colors ${
+                log.status === 'failed' 
+                  ? 'border-dashboard-error/30 hover:border-dashboard-error/50' 
+                  : 'border-dashboard-cardBorder hover:border-dashboard-cardBorderHover'
+              }`}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="text-dashboard-accent1 font-semibold">
@@ -83,9 +131,11 @@ ${log.error_details ? `Error Details: ${log.error_details}` : ''}
                   {log.status}
                 </span>
               </div>
-              <p className="text-dashboard-text mb-1">{log.message}</p>
+              <p className={`mb-1 ${log.status === 'failed' ? 'text-dashboard-error' : 'text-dashboard-text'}`}>
+                {log.message}
+              </p>
               {log.error_details && (
-                <p className="text-dashboard-error text-xs mt-1">
+                <p className="text-dashboard-error text-xs mt-1 bg-dashboard-error/10 p-2 rounded">
                   Error: {log.error_details}
                 </p>
               )}
