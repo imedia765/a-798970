@@ -16,7 +16,10 @@ export const QuickPushButton = ({ isProcessing }: { isProcessing: boolean }) => 
       console.log('Starting quick push operation...');
 
       const { data, error } = await supabase.functions.invoke('git-operations', {
-        body: { branch: 'main' }
+        body: { 
+          branch: 'main',
+          operation: 'push'
+        }
       });
 
       if (error) {
@@ -35,7 +38,7 @@ export const QuickPushButton = ({ isProcessing }: { isProcessing: boolean }) => 
       console.error('Quick push error:', error);
       toast({
         title: "Push Failed",
-        description: error.message || "Failed to push changes. Please try again.",
+        description: error.message || "Failed to push changes. Please check the logs and try again.",
         variant: "destructive",
       });
     }

@@ -37,11 +37,15 @@ const GitOperationsCard = () => {
     const token = formData.get('github_token') as string;
 
     try {
+      console.log('Updating GitHub token...');
       const { error } = await supabase.functions.invoke('update-github-token', {
         body: { token }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Token update error:', error);
+        throw error;
+      }
 
       toast({
         title: "Success",
@@ -117,7 +121,7 @@ const GitOperationsCard = () => {
           <AlertCircle className="h-4 w-4 text-dashboard-accent1" />
           <AlertTitle className="text-dashboard-accent1">Important</AlertTitle>
           <AlertDescription className="text-dashboard-muted">
-            Using stored GitHub token from Supabase secrets. Make sure it's configured in the Edge Functions settings.
+            Make sure your GitHub token has the correct repository permissions and is properly configured.
           </AlertDescription>
         </Alert>
 

@@ -25,13 +25,19 @@ export const useGitOperations = () => {
 
   const fetchRepositories = async () => {
     try {
+      console.log('Fetching repositories...');
       const { data, error } = await supabase
         .from('git_repository_configs')
         .select('*')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching repositories:', error);
+        throw error;
+      }
+      
+      console.log('Fetched repositories:', data);
       setRepositories(data || []);
       if (data && data.length > 0) {
         setSelectedRepo(data[0].id);
@@ -55,7 +61,11 @@ export const useGitOperations = () => {
         .order('created_at', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching logs:', error);
+        throw error;
+      }
+      
       console.log('Fetched logs:', data);
       setLogs(data || []);
     } catch (error) {
@@ -81,6 +91,7 @@ export const useGitOperations = () => {
         throw new Error('No active session');
       }
 
+      console.log('Starting git operation with repository:', selectedRepo);
       setProgress(30);
       setCurrentOperation('Authenticating with GitHub...');
 
@@ -94,7 +105,10 @@ export const useGitOperations = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Push operation error:', error);
+        throw error;
+      }
 
       console.log('Push operation response:', data);
       setProgress(100);
