@@ -7,12 +7,13 @@ import AddressDetails from "./profile/AddressDetails";
 import MembershipDetails from "./profile/MembershipDetails";
 import { useRoleAccess } from "@/hooks/useRoleAccess";
 import { Button } from "@/components/ui/button";
-import { Edit, CreditCard } from "lucide-react";
+import { Edit, CreditCard, Phone } from "lucide-react";
 import EditProfileDialog from "./members/EditProfileDialog";
 import PaymentDialog from "./members/PaymentDialog";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface MemberProfileCardProps {
   memberProfile: Member | null;
@@ -20,6 +21,7 @@ interface MemberProfileCardProps {
 
 const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
   const { userRole } = useRoleAccess();
+  const { toast } = useToast();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
 
@@ -41,6 +43,21 @@ const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
     enabled: !!memberProfile?.collector
   });
 
+  const handleContactCollector = () => {
+    if (collectorInfo?.phone) {
+      toast({
+        title: "Collector Contact Info",
+        description: `${collectorInfo.name}: ${collectorInfo.phone}`,
+      });
+    } else {
+      toast({
+        title: "Contact Info Unavailable",
+        description: "Collector contact information is not available.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!memberProfile) {
     return (
       <Card className="bg-dashboard-card border-white/10 shadow-lg">
@@ -53,11 +70,6 @@ const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
       </Card>
     );
   }
-
-  const handleProfileUpdated = () => {
-    // Trigger a refresh of the profile data
-    window.location.reload();
-  };
 
   return (
     <Card className="bg-dashboard-card border-white/10 shadow-lg hover:border-dashboard-accent1/50 transition-all duration-300">
@@ -83,13 +95,23 @@ const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
                     </Button>
                   )}
                   
-                  <Button
-                    onClick={() => setShowPaymentDialog(true)}
-                    className="w-full bg-dashboard-accent1 hover:bg-dashboard-accent1/80 text-white transition-colors"
-                  >
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Make Payment
-                  </Button>
+                  {userRole === 'member' ? (
+                    <Button
+                      onClick={handleContactCollector}
+                      className="w-full bg-dashboard-accent3 hover:bg-dashboard-accent3/80 text-white transition-colors"
+                    >
+                      <Phone className="w-4 h-4 mr-2" />
+                      Contact Collector: {collectorInfo?.name || 'Not Assigned'}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setShowPaymentDialog(true)}
+                      className="w-full bg-dashboard-accent1 hover:bg-dashboard-accent1/80 text-white transition-colors"
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Make Payment
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -108,7 +130,7 @@ const MemberProfileCard = ({ memberProfile }: MemberProfileCardProps) => {
         member={memberProfile}
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
-        onProfileUpdated={handleProfileUpdated}
+        onProfileUpdated={() => window.location.reload()}
       />
 
       {showPaymentDialog && (
