@@ -3,6 +3,7 @@ import SystemHealthCheck from "./system/SystemHealthCheck";
 import GitOperationsCard from "./system/GitOperationsCard";
 import RoleManagementCard from "./system/RoleManagementCard";
 import UserManual from "./documentation/UserManual";
+import AnnouncementsManager from "./system/AnnouncementsManager";
 
 const SystemToolsView = () => {
   return (
@@ -18,6 +19,7 @@ const SystemToolsView = () => {
           <TabsTrigger value="git">Git Operations</TabsTrigger>
           <TabsTrigger value="roles">Role Management</TabsTrigger>
           <TabsTrigger value="manual">User Manual</TabsTrigger>
+          <TabsTrigger value="announcements">Announcements</TabsTrigger>
         </TabsList>
 
         <TabsContent value="health" className="space-y-4">
@@ -34,6 +36,10 @@ const SystemToolsView = () => {
 
         <TabsContent value="manual" className="space-y-4">
           <UserManual />
+        </TabsContent>
+
+        <TabsContent value="announcements" className="space-y-4">
+          <AnnouncementsManager />
         </TabsContent>
       </Tabs>
     </div>
