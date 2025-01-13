@@ -31,7 +31,6 @@ const UserManual = () => {
       
       if (error) throw error;
 
-      // Open the manual in a new tab
       window.open(data.url, '_blank');
 
       toast({
@@ -59,10 +58,10 @@ const UserManual = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">User Manual</h2>
+          <h2 className="text-2xl font-semibold text-white">User Manual</h2>
           {currentManual ? (
             <p className="text-sm text-dashboard-muted">
               Version {currentManual.version} • Last updated: {new Date(currentManual.updated_at).toLocaleDateString()}
@@ -90,15 +89,85 @@ const UserManual = () => {
         </Button>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-dashboard-card border border-dashboard-cardBorder rounded-lg p-6">
+          <img 
+            src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b" 
+            alt="Getting Started" 
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h3 className="text-lg font-medium text-white mb-4">Getting Started</h3>
+          <div className="space-y-2 text-dashboard-text">
+            <p>• Login Process - Simple member number authentication</p>
+            <p>• Dashboard Overview - Navigate your personalized dashboard</p>
+            <p>• Profile Setup - Complete your member information</p>
+          </div>
+        </div>
+
+        <div className="bg-dashboard-card border border-dashboard-cardBorder rounded-lg p-6">
+          <img 
+            src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
+            alt="Member Features" 
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h3 className="text-lg font-medium text-white mb-4">Member Features</h3>
+          <div className="space-y-2 text-dashboard-text">
+            <p>• Profile Management - Update your personal information</p>
+            <p>• Payment History - Track all your contributions</p>
+            <p>• Family Members - Manage your family information</p>
+          </div>
+        </div>
+
+        <div className="bg-dashboard-card border border-dashboard-cardBorder rounded-lg p-6">
+          <img 
+            src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
+            alt="Collector Features" 
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h3 className="text-lg font-medium text-white mb-4">Collector Features</h3>
+          <div className="space-y-2 text-dashboard-text">
+            <p>• Member Management - View and manage assigned members</p>
+            <p>• Collection Tracking - Record and monitor payments</p>
+            <p>• Reports Generation - Create detailed collection reports</p>
+          </div>
+        </div>
+
+        <div className="bg-dashboard-card border border-dashboard-cardBorder rounded-lg p-6">
+          <img 
+            src="https://images.unsplash.com/photo-1498050108023-c5249f4df085" 
+            alt="Admin Features" 
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h3 className="text-lg font-medium text-white mb-4">Admin Features</h3>
+          <div className="space-y-2 text-dashboard-text">
+            <p>• System Management - Configure system settings</p>
+            <p>• User Administration - Manage roles and permissions</p>
+            <p>• Monitoring Tools - Track system performance</p>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-dashboard-card border border-dashboard-cardBorder rounded-lg p-6">
-        <h3 className="text-lg font-medium text-white mb-4">Manual Contents</h3>
-        <div className="space-y-2">
-          <p className="text-dashboard-text">• Getting Started - Login process and initial setup</p>
-          <p className="text-dashboard-text">• Member Features - Profile management and payments</p>
-          <p className="text-dashboard-text">• Collector Features - Member management and collections</p>
-          <p className="text-dashboard-text">• Admin Features - System management and monitoring</p>
-          <p className="text-dashboard-text">• Common Tasks - Step-by-step guides</p>
-          <p className="text-dashboard-text">• Troubleshooting - Common issues and solutions</p>
+        <h3 className="text-lg font-medium text-white mb-4">Additional Resources</h3>
+        <div className="space-y-4">
+          <div className="flex items-start space-x-3">
+            <div className="bg-dashboard-accent1/10 p-3 rounded-lg">
+              <FileDown className="w-5 h-5 text-dashboard-accent1" />
+            </div>
+            <div>
+              <h4 className="text-white font-medium">Troubleshooting Guide</h4>
+              <p className="text-dashboard-text text-sm">Common issues and their solutions</p>
+            </div>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="bg-dashboard-accent1/10 p-3 rounded-lg">
+              <FileDown className="w-5 h-5 text-dashboard-accent1" />
+            </div>
+            <div>
+              <h4 className="text-white font-medium">Quick Start Guide</h4>
+              <p className="text-dashboard-text text-sm">Step-by-step guide for new users</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
