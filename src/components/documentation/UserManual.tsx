@@ -16,7 +16,7 @@ const UserManual = () => {
         .from('documentation')
         .select('*')
         .eq('is_current', true)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
@@ -63,10 +63,12 @@ const UserManual = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold text-white">User Manual</h2>
-          {currentManual && (
+          {currentManual ? (
             <p className="text-sm text-dashboard-muted">
               Version {currentManual.version} • Last updated: {new Date(currentManual.updated_at).toLocaleDateString()}
             </p>
+          ) : (
+            <p className="text-sm text-dashboard-muted">No manual version available</p>
           )}
         </div>
         <Button
@@ -82,7 +84,7 @@ const UserManual = () => {
           ) : (
             <>
               <FileDown className="w-4 h-4 mr-2" />
-              Download Manual
+              {currentManual ? 'Download Manual' : 'Generate Manual'}
             </>
           )}
         </Button>
