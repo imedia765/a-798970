@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { cleanup } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { expect, afterEach, vi } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
@@ -42,12 +42,17 @@ const createTestQueryClient = () => new QueryClient({
   },
 });
 
+interface RenderWithProvidersOptions {
+  route?: string;
+  queryClient?: QueryClient;
+}
+
 export function renderWithProviders(
   ui: React.ReactElement,
-  {
+  { 
     route = '/',
     queryClient = createTestQueryClient(),
-  } = {}
+  }: RenderWithProvidersOptions = {}
 ) {
   return {
     ...render(
@@ -69,7 +74,7 @@ afterEach(() => {
 
 // Add custom matchers
 expect.extend({
-  toHaveBeenCalledWithMatch(received, ...expected) {
+  toHaveBeenCalledWithMatch(received: any, ...expected: any[]) {
     const pass = this.equals(received.mock.calls[0], expected);
     return {
       pass,
