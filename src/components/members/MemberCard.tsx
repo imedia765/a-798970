@@ -29,7 +29,7 @@ import { Trash2 } from 'lucide-react';
 
 interface MemberCardProps {
   member: Member;
-  userRole: string;
+  userRole: string | null;
   onEditClick: () => void;
   onDeleteClick: () => void;
 }

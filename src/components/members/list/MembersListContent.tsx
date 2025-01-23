@@ -4,10 +4,6 @@ import { Accordion } from "@/components/ui/accordion";
 import MemberCard from '../MemberCard';
 import PaginationControls from '../../ui/pagination/PaginationControls';
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
-import EditProfileDialog from "../EditProfileDialog";
 
 interface MembersListContentProps {
   members: Member[];
@@ -16,6 +12,8 @@ interface MembersListContentProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  onEditClick: (memberId: string) => void;
+  onDeleteClick: (memberId: string) => void;
 }
 
 const MembersListContent = ({
@@ -25,46 +23,9 @@ const MembersListContent = ({
   currentPage,
   totalPages,
   onPageChange,
+  onEditClick,
+  onDeleteClick,
 }: MembersListContentProps) => {
-  const { toast } = useToast();
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-
-  const handleEditClick = (member: Member) => {
-    setSelectedMember(member);
-    setShowEditDialog(true);
-  };
-
-  const handleDeleteMember = async (memberId: string) => {
-    try {
-      const { error } = await supabase
-        .from('members')
-        .delete()
-        .eq('id', memberId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Member deleted",
-        description: "Member has been successfully deleted",
-      });
-
-      // Refresh the page to update the list
-      window.location.reload();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleProfileUpdated = () => {
-    setShowEditDialog(false);
-    window.location.reload();
-  };
-
   return (
     <div className="space-y-4">
       <ScrollArea className="h-[calc(100vh-16rem)] w-full rounded-md">
@@ -79,8 +40,8 @@ const MembersListContent = ({
                 key={member.id}
                 member={member}
                 userRole={userRole}
-                onEditClick={() => handleEditClick(member)}
-                onDeleteClick={() => handleDeleteMember(member.id)}
+                onEditClick={() => onEditClick(member.id)}
+                onDeleteClick={() => onDeleteClick(member.id)}
               />
             ))}
           </Accordion>
@@ -95,15 +56,6 @@ const MembersListContent = ({
             onPageChange={onPageChange}
           />
         </div>
-      )}
-
-      {selectedMember && (
-        <EditProfileDialog
-          member={selectedMember}
-          open={showEditDialog}
-          onOpenChange={setShowEditDialog}
-          onProfileUpdated={handleProfileUpdated}
-        />
       )}
     </div>
   );
