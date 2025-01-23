@@ -15,6 +15,7 @@ import PaymentDialog from './PaymentDialog';
 import { format } from 'date-fns';
 import NotesDialog from './notes/NotesDialog';
 import NotesList from './notes/NotesList';
+import EditProfileDialog from './EditProfileDialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,6 +39,7 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const { toast } = useToast();
   const { hasRole } = useRoleAccess();
   const isCollector = hasRole('collector');
@@ -62,30 +64,6 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
         enhanced_roles: [],
         syncStatus: undefined
       };
-
-      if (collectorData.member_number) {
-        const { data: memberData } = await supabase
-          .from('members')
-          .select('auth_user_id')
-          .eq('member_number', collectorData.member_number)
-          .single();
-
-        if (memberData?.auth_user_id) {
-          const { data: rolesData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', memberData.auth_user_id);
-
-          collector.roles = rolesData?.map(r => r.role) || [];
-
-          const { data: enhancedRolesData } = await supabase
-            .from('enhanced_roles')
-            .select('role_name, is_active')
-            .eq('user_id', memberData.auth_user_id);
-
-          collector.enhanced_roles = enhancedRolesData || [];
-        }
-      }
 
       return collector;
     },
@@ -118,6 +96,15 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
     setIsPaymentDialogOpen(true);
   };
 
+  const handleEditProfile = () => {
+    setIsEditProfileOpen(true);
+  };
+
+  const handleProfileUpdated = () => {
+    // Refresh data after profile update
+    window.location.reload();
+  };
+
   return (
     <AccordionItem value={member.id} className="border-b border-white/10">
       <AccordionTrigger className="hover:no-underline">
@@ -131,7 +118,7 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
               <Button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  onEditClick();
+                  handleEditProfile();
                 }} 
                 className="bg-dashboard-accent2 hover:bg-dashboard-accent2/80"
               >
@@ -194,7 +181,6 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
                 <div className="space-y-3">
                   {paymentHistory.map((payment) => (
                     <div key={payment.id} className="border-b border-dashboard-cardBorder pb-2">
-                      <p className="text-sm text-dashboard-text">Amount: <span className="text-dashboard-accent3">£{payment.amount}</span></p>
                       <p className="text-sm text-dashboard-text">Date: <span className="text-white">{format(new Date(payment.created_at), 'dd/MM/yyyy')}</span></p>
                       <p className="text-sm text-dashboard-text">Status: 
                         <span className={`ml-1 ${
@@ -244,6 +230,13 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
             isOpen={isNoteDialogOpen}
             onClose={() => setIsNoteDialogOpen(false)}
             memberId={member.id}
+          />
+
+          <EditProfileDialog
+            member={member}
+            open={isEditProfileOpen}
+            onOpenChange={setIsEditProfileOpen}
+            onProfileUpdated={handleProfileUpdated}
           />
         </div>
       </AccordionContent>
