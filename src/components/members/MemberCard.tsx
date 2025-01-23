@@ -128,10 +128,13 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
           </div>
           {canModify && (
             <div className="flex items-center space-x-2">
-              <Button onClick={(e) => {
-                e.stopPropagation();
-                onEditClick();
-              }} className="bg-dashboard-accent2 hover:bg-dashboard-accent2/80">
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditClick();
+                }} 
+                className="bg-dashboard-accent2 hover:bg-dashboard-accent2/80"
+              >
                 Edit
               </Button>
               {userRole === 'admin' && (
@@ -146,10 +149,13 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
                   <Trash2 className="h-4 w-4" />
                 </Button>
               )}
-              <Button onClick={(e) => {
-                e.stopPropagation();
-                handlePaymentClick();
-              }} className="bg-dashboard-accent3 hover:bg-dashboard-accent3/80">
+              <Button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePaymentClick();
+                }} 
+                className="bg-dashboard-accent3 hover:bg-dashboard-accent3/80"
+              >
                 Pay
               </Button>
             </div>
