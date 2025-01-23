@@ -15,20 +15,33 @@ import PaymentDialog from './PaymentDialog';
 import { format } from 'date-fns';
 import NotesDialog from './notes/NotesDialog';
 import NotesList from './notes/NotesList';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Trash2 } from 'lucide-react';
 
 interface MemberCardProps {
   member: Member;
   userRole: string;
-  onPaymentClick: () => void;
   onEditClick: () => void;
+  onDeleteClick: () => void;
 }
 
-const MemberCard = ({ member, userRole, onPaymentClick, onEditClick }: MemberCardProps) => {
+const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCardProps) => {
   const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { toast } = useToast();
   const { hasRole } = useRoleAccess();
   const isCollector = hasRole('collector');
+  const canModify = userRole === 'admin' || userRole === 'collector';
 
   const { data: collectorInfo } = useQuery({
     queryKey: ['collector', member.collector],
@@ -113,10 +126,34 @@ const MemberCard = ({ member, userRole, onPaymentClick, onEditClick }: MemberCar
             <h3 className="text-lg font-semibold text-dashboard-accent1">{member.full_name}</h3>
             <p className="text-sm text-dashboard-muted">Member Number: {member.member_number}</p>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button onClick={onEditClick} className="bg-dashboard-accent2 hover:bg-dashboard-accent2/80">Edit</Button>
-            <Button onClick={handlePaymentClick} className="bg-dashboard-accent3 hover:bg-dashboard-accent3/80">Pay</Button>
-          </div>
+          {canModify && (
+            <div className="flex items-center space-x-2">
+              <Button onClick={(e) => {
+                e.stopPropagation();
+                onEditClick();
+              }} className="bg-dashboard-accent2 hover:bg-dashboard-accent2/80">
+                Edit
+              </Button>
+              {userRole === 'admin' && (
+                <Button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteConfirm(true);
+                  }} 
+                  variant="destructive"
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <Button onClick={(e) => {
+                e.stopPropagation();
+                handlePaymentClick();
+              }} className="bg-dashboard-accent3 hover:bg-dashboard-accent3/80">
+                Pay
+              </Button>
+            </div>
+          )}
         </div>
       </AccordionTrigger>
 
@@ -204,6 +241,30 @@ const MemberCard = ({ member, userRole, onPaymentClick, onEditClick }: MemberCar
           />
         </div>
       </AccordionContent>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the member
+              and all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowDeleteConfirm(false);
+                onDeleteClick();
+              }}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AccordionItem>
   );
 };
