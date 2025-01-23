@@ -85,10 +85,10 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
   });
 
   const handlePaymentClick = () => {
-    if (!isCollector) {
+    if (!isCollector && userRole !== 'admin') {
       toast({
         title: "Not Authorized",
-        description: "Only collectors can record payments",
+        description: "Only collectors or admins can record payments",
         variant: "destructive"
       });
       return;
@@ -113,7 +113,7 @@ const MemberCard = ({ member, userRole, onEditClick, onDeleteClick }: MemberCard
             <h3 className="text-lg font-semibold text-dashboard-accent1">{member.full_name}</h3>
             <p className="text-sm text-dashboard-muted">Member Number: {member.member_number}</p>
           </div>
-          {canModify && (
+          {(canModify || userRole === 'admin') && (
             <div className="flex items-center space-x-2">
               <Button 
                 onClick={(e) => {

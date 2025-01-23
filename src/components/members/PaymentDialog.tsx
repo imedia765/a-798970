@@ -39,15 +39,16 @@ const PaymentDialog = ({
   const queryClient = useQueryClient();
   const { hasRole } = useRoleAccess();
   const isCollector = hasRole('collector');
+  const isAdmin = hasRole('admin');
 
-  console.log('Payment Dialog - Role check:', { isCollector });
+  console.log('Payment Dialog - Role check:', { isCollector, isAdmin });
   console.log('Payment Dialog - Member Info:', { memberId, memberNumber, memberName });
 
   const handleSubmit = async () => {
-    if (!isCollector) {
+    if (!isCollector && !isAdmin) {
       toast({
         title: "Not Authorized",
-        description: "Only collectors can record payments",
+        description: "Only collectors or admins can record payments",
         variant: "destructive"
       });
       return;
@@ -206,11 +207,11 @@ const PaymentDialog = ({
       <DialogContent className="bg-dashboard-card border-white/10 w-[95%] max-w-md mx-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl font-semibold text-dashboard-highlight">
-            {isCollector ? 'Record Payment' : 'Payment Information'}
+            {isCollector || isAdmin ? 'Record Payment' : 'Payment Information'}
           </DialogTitle>
         </DialogHeader>
 
-        {isCollector ? renderCollectorView() : renderMemberView()}
+        {isCollector || isAdmin ? renderCollectorView() : renderMemberView()}
 
         {showSplash && (
           <PaymentConfirmationSplash

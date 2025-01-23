@@ -391,6 +391,7 @@ export type Database = {
           emergency_collection_created_at: string | null
           emergency_collection_due_date: string | null
           emergency_collection_status: string | null
+          failed_login_attempts: number | null
           family_member_dob: string | null
           family_member_gender: string | null
           family_member_name: string | null
@@ -398,9 +399,13 @@ export type Database = {
           full_name: string
           gender: string | null
           id: string
+          last_failed_attempt: string | null
+          locked_until: string | null
           marital_status: string | null
           member_number: string
           membership_type: string | null
+          password_reset_required: boolean | null
+          password_set_at: string | null
           payment_amount: number | null
           payment_date: string | null
           payment_notes: string | null
@@ -434,6 +439,7 @@ export type Database = {
           emergency_collection_created_at?: string | null
           emergency_collection_due_date?: string | null
           emergency_collection_status?: string | null
+          failed_login_attempts?: number | null
           family_member_dob?: string | null
           family_member_gender?: string | null
           family_member_name?: string | null
@@ -441,9 +447,13 @@ export type Database = {
           full_name: string
           gender?: string | null
           id?: string
+          last_failed_attempt?: string | null
+          locked_until?: string | null
           marital_status?: string | null
           member_number: string
           membership_type?: string | null
+          password_reset_required?: boolean | null
+          password_set_at?: string | null
           payment_amount?: number | null
           payment_date?: string | null
           payment_notes?: string | null
@@ -477,6 +487,7 @@ export type Database = {
           emergency_collection_created_at?: string | null
           emergency_collection_due_date?: string | null
           emergency_collection_status?: string | null
+          failed_login_attempts?: number | null
           family_member_dob?: string | null
           family_member_gender?: string | null
           family_member_name?: string | null
@@ -484,9 +495,13 @@ export type Database = {
           full_name?: string
           gender?: string | null
           id?: string
+          last_failed_attempt?: string | null
+          locked_until?: string | null
           marital_status?: string | null
           member_number?: string
           membership_type?: string | null
+          password_reset_required?: boolean | null
+          password_set_at?: string | null
           payment_amount?: number | null
           payment_date?: string | null
           payment_notes?: string | null
@@ -584,6 +599,96 @@ export type Database = {
           metric_value?: number
           severity?: Database["public"]["Enums"]["severity_level"] | null
           timestamp?: string | null
+        }
+        Relationships: []
+      }
+      password_change_logs: {
+        Row: {
+          action: string | null
+          changed_at: string | null
+          changed_by: string | null
+          client_info: Json | null
+          error_code: string | null
+          error_details: string | null
+          id: string
+          ip_address: string | null
+          is_reset: boolean | null
+          reason: string | null
+          stack_trace: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          changed_at?: string | null
+          changed_by?: string | null
+          client_info?: Json | null
+          error_code?: string | null
+          error_details?: string | null
+          id?: string
+          ip_address?: string | null
+          is_reset?: boolean | null
+          reason?: string | null
+          stack_trace?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          changed_at?: string | null
+          changed_by?: string | null
+          client_info?: Json | null
+          error_code?: string | null
+          error_details?: string | null
+          id?: string
+          ip_address?: string | null
+          is_reset?: boolean | null
+          reason?: string | null
+          stack_trace?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      password_config: {
+        Row: {
+          created_at: string | null
+          id: string
+          lockout_duration: unknown | null
+          max_attempts: number | null
+          min_length: number | null
+          require_lowercase: boolean | null
+          require_number: boolean | null
+          require_special: boolean | null
+          require_uppercase: boolean | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          lockout_duration?: unknown | null
+          max_attempts?: number | null
+          min_length?: number | null
+          require_lowercase?: boolean | null
+          require_number?: boolean | null
+          require_special?: boolean | null
+          require_uppercase?: boolean | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          lockout_duration?: unknown | null
+          max_attempts?: number | null
+          min_length?: number | null
+          require_lowercase?: boolean | null
+          require_number?: boolean | null
+          require_special?: boolean | null
+          require_uppercase?: boolean | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -997,6 +1102,23 @@ export type Database = {
           rls_enabled: boolean
         }[]
       }
+      handle_failed_login: {
+        Args: {
+          member_number: string
+        }
+        Returns: Json
+      }
+      handle_password_reset: {
+        Args: {
+          member_number: string
+          new_password: string
+          admin_user_id?: string
+          ip_address?: string
+          user_agent?: string
+          client_info?: Json
+        }
+        Returns: Json
+      }
       is_admin: {
         Args: {
           user_uid: string
@@ -1027,6 +1149,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      reset_failed_login: {
+        Args: {
+          member_number: string
+        }
+        Returns: undefined
+      }
       restore_from_backup: {
         Args: {
           backup_data: Json
@@ -1048,6 +1176,12 @@ export type Database = {
       update_collector_profiles: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      validate_password_complexity: {
+        Args: {
+          password: string
+        }
+        Returns: Json
       }
       validate_user_roles: {
         Args: Record<PropertyKey, never>

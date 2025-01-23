@@ -6,7 +6,6 @@ import BankDetails from "../payment/BankDetails";
 interface ProfileActionsProps {
   userRole: string;
   onEditClick: () => void;
-  onPaymentClick?: () => void;  // Made optional since not all roles need it
   collectorInfo?: {
     name?: string | null;
     phone?: string | null;
@@ -17,7 +16,6 @@ interface ProfileActionsProps {
 const ProfileActions = ({ 
   userRole, 
   onEditClick,
-  onPaymentClick,
   collectorInfo,
   memberNumber
 }: ProfileActionsProps) => {
@@ -62,19 +60,10 @@ const ProfileActions = ({
           </div>
         </div>
       ) : (
-        userRole === 'admin' && onPaymentClick && (
-          <>
-            <Button
-              onClick={onPaymentClick}
-              className="w-full bg-dashboard-accent1 hover:bg-dashboard-accent1/80 text-white transition-colors"
-            >
-              <PhoneCall className="w-4 h-4 mr-2" />
-              Make Payment
-            </Button>
-            <div className="mt-6">
-              <BankDetails memberNumber={memberNumber} />
-            </div>
-          </>
+        userRole === 'admin' && (
+          <div className="mt-6">
+            <BankDetails memberNumber={memberNumber} />
+          </div>
         )
       )}
 
